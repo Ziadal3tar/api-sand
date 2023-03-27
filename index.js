@@ -17,10 +17,6 @@ const port = process.env.PORT || 3000
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 
-
-
-
-
 const OAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URL)
 OAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN })
 
@@ -31,7 +27,7 @@ async function sendEmail(email, subject, message) {
       service: 'gmail',
       auth: {
         type: 'OAuth2',
-        user: 'ziadalattar22@gmail.com',
+        user: 'info@sandstonetires.com',
 
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -41,7 +37,7 @@ async function sendEmail(email, subject, message) {
     });
     let info = await transport.sendMail({
       from: email,
-      to: 'ziadalattar22@gmail.com',
+      to: 'info@sandstonetires.com',
       subject,
       html: message,
     });
