@@ -11,7 +11,6 @@ export const HME = (err, req, res, next) => {
         next();
     }
 };
-
 export function myMulter(customValidation = fileValidation.image) {
     const storage = multer.diskStorage({})
     function fileFilter(req, file, cb) {
