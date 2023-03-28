@@ -13,7 +13,7 @@ var corsOption = {
   optionsSuccessStatus: 200
 }
 app.use(cors("*"))
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 
