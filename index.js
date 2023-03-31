@@ -1,18 +1,27 @@
 import path from 'path'
+// import { Http2ServerRequest } from 'http2'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 const __direname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__direname, './config/.env') })
+const port = process.env.PORT || 3000
 import express from 'express';
 const app = express()
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader('Access-Control-Allow-Origin', 'http://sandstonetires.com'); // replace with your front-end domain
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 import axios from 'axios';
-import cors from "cors"
+import cors from 'cors'
 var corsOption = {
   origin: "*",
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 }
-app.use(cors("*"))
-const port = process.env.PORT || 3000
+app.use(cors('*'))
 
 const clientId = process.env.APPLICATIONID;
 const clientSecret = process.env.CLIENTSECRET;
@@ -59,16 +68,39 @@ async function sendEmail(message2, subject) {
     url: `https://graph.microsoft.com/v1.0/users/info@sandstonetires.com/sendMail`,
     headers: {
       'Authorization': "Bearer " + oAuthToken,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      // mode: 'no-cors',
     },
     data: msgPayload
   })
+    .then((response) => {
+      // console.log('hii');
+      response.headers('Access-Control-Allow-Origin', '*')
+    })
     .catch(error => {
       console.error(error);
     });
 }
 app.use(express.json());
+
+// app.use(cors() ,function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader("Access-Control-Allow-Credentials", "true");
+//   res.setHeader("Access-Control-Max-Age", "1800");
+//   res.setHeader("Access-Control-Allow-Headers", "content-type");
+//   res.setHeader("Access-Control-Allow-Methods","PUT, POST, GET, DELETE, PATCH, OPTIONS");
+//   // res.setHeader("Content-Type", "application/json;charset=utf-8"); // Opening this comment will cause problems
+//   next();
+// });
+
+app.get('/', async (req, res) => {
+  res.json({ message: 'apiss' })
+})
+
 app.post('/sendMail', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  console.log('frfrfr');
   let { name, email, notes, phone, quantity } = req.body;
   let message2 = 'customers emails'
   let subject = `<h4>From: ${email}</h4><br><h4> Name:${name}</h4><br><h4>Phone: ${phone}</h4><br><h4>Message: ${notes}</h4><br><h4>quantity: ${quantity}</h4><br>`
@@ -79,8 +111,11 @@ app.post('/sendMail', async (req, res) => {
     res.status(404).json({ message: "invalid email" })
   }
 })
-app.get('/redirect', async (req, res) => {
-  console.log('done');
+app.get('/redirect', async function(req, res) {
   res.status(201).json({ message: "DONE" })
 })
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+
+
+
