@@ -98,7 +98,7 @@ app.get('/', async (req, res) => {
   res.json({ message: 'apiss' })
 })
 
-app.post('/sendMail', async (req, res) => {
+app.post('/sendEmail', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   console.log('frfrfr');
   let { name, email, notes, phone, quantity } = req.body;
